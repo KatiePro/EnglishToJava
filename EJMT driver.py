@@ -80,3 +80,10 @@ Node = commands.head
 for x in range(0, commands.size()):
     print(Node.data)
     Node = Node.getNext()
+	
+	
+	
+	
+	
+	
+	
