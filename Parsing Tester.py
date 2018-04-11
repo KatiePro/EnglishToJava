@@ -1,3 +1,10 @@
+'''
+Artificial Intelligence Project
+
+This program takes simple english sentences and translates them into
+the java programming language as commands.
+'''
+
 import nltk     #Holds the CFG and parser
 import re       #Used for regular expressions
 
@@ -23,7 +30,6 @@ def printIntent(result, names, numbers):
 
 def setIntent(result, names, numbers):
     lastName = len(names) - 1
-    lastNumber = len(numbers) - 1
     if "(VALEXPR" in result:
         if (result.index("(VALEXPR") > result.index("(SETVARNAME")):
             print("\n" + (names[0]).replace('"',"") + " = "\
@@ -213,7 +219,7 @@ def variableHelp():
 def setHelp():
     print("Setting a variable has two parts in Java: the name and the quantity assigned.")
     print("Here are examples of variables being set that this program understands:\n")
-    print("Set \"X\" equal to 7.\nAssign \"var1\" plus \"var2\" to \"var3\"")
+    print("Set \"X\" equal to 7.\nAssign \"Jim\" plus \"Bob\" to \"Joe\"")
     print("Make \"X\" equal -8.3 times 12\nSet \"index\" to \"current\"\n")
 
 def printHelp():
@@ -230,6 +236,10 @@ def methodHelp():
     print("Methods are represented by a name, modifier, and a return type.")
     print("Here are examples of method statements that this program understands:\n")
     print("Create a method.\nMake a method called \"my_method\"\nMake a private method\n")
+
+def methodWords():
+    print("Key words for method modifiers: public, static, void, private protected")
+    print("Key words for method return type: integer, void, boolean, float, double, long")
 
 #Creates the grammar
 grammar = nltk.CFG.fromstring("""
@@ -310,7 +320,7 @@ commentHelp()
 methodHelp()
 
 while cont == 'y':
-    userInput = input("Input a string to test: ")
+    userInput = input("Input a string: ")
     newInput = userInput.rstrip('.') #Takes away the period from the sentence
     names = re.findall(r'"[^"]*"', newInput) #Gets anything in double quotes
     numbers =  re.findall(r"[-+]?\d*\.\d+\b|\b\d+\b|[-+]?\d+\b", newInput) #Gets all numbers
