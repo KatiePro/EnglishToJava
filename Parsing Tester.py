@@ -1,6 +1,5 @@
 '''
 English to Java Mathematical Translator
-    https://github.com/kprochi2/EnglishToJava
 
 Katie Prochilo, Abigail Eastman, Caitlin McElwee
 
@@ -13,7 +12,7 @@ While interacting with the program, users receive helpful tips.
 The program can ask users for missing information, depending
 on what information was previously received.
 
-Documentation by: Katie Prochilo
+Documentation by Katie Prochilo
 '''
 
 import nltk  # Holds the CFG and parser
@@ -76,9 +75,11 @@ def setIntent(result, names, numbers):
     lastName = len(names) - 1
     # user specified a method name
     if "(VALEXPR" in result:
+        # an expression comes after a variable name
         if (result.index("(VALEXPR") > result.index("(SETVARNAME")):
             print("\n" + (names[0]).replace('"', "") + " = "\
                   + expression(result, names[1:], numbers) + ";")
+        # an expression comes before a variable name
         elif (result.index("(VALEXPR") < result.index("(SETVARNAME")):
             print("\n" + (names[lastName]).replace('"', "") + " = "\
                   + expression(result, names[0: -1], numbers) + ";")
@@ -112,7 +113,7 @@ def methodIntent(result, names, numbers):
         # user specified a modifier
         if "(MOD" in result:
             # by Katie Prochilo
-            returnType = returnTypeMenu()
+            returnType = returnTypeMenu().lower()
                 
             if "private" in result:
                 print("private " + replaceDecType(returnType) + " " + (names[0]).replace('"', "")\
@@ -129,8 +130,8 @@ def methodIntent(result, names, numbers):
         # user did not specifify a modifier
         else:
             # by Katie Prochilo
-            modifier = modifierMenu()
-            returnType = returnTypeMenu()
+            modifier = modifierMenu().lower()
+            returnType = returnTypeMenu().lower()
                 
             if "private" in modifier:
                 print("private " + replaceDecType(returnType) + " " + (names[0]).replace('"', "")\
@@ -147,13 +148,13 @@ def methodIntent(result, names, numbers):
     # user did not specifify a method name
     else:
         # by Katie Prochilo
-        methodName = methodNameMenu()                
-        names.insert(0,methodName)
+        methodName = methodNameMenu().lower()
         
+        names.insert(0,methodName)
         # user specified a modifier
         if "(MOD" in result:
             # by Katie Prochilo
-            returnType = returnTypeMenu()
+            returnType = returnTypeMenu().lower()
                 
             if "private" in result:
                 print("private " + replaceDecType(returnType) + " " + (names[0]).replace('"', "")\
@@ -170,8 +171,8 @@ def methodIntent(result, names, numbers):
         # user did not specifify a modifier
         else:
             # by Katie Prochilo
-            modifier = modifierMenu()            
-            returnType = returnTypeMenu()
+            modifier = modifierMenu().lower()            
+            returnType = returnTypeMenu().lower()
 
             if "private" in modifier:
                 print("private " + replaceDecType(returnType) + " " + (names[0]).replace('"', "")\
@@ -222,7 +223,7 @@ def variableIntent(result, names, numbers):
         # user did not specifify a variable name
         else:
             # By Katie Prochilo; help and set the variable name
-            varName = varNameMenu()
+            varName = varNameMenu().lower()
                 
             names.insert(0,varName)
             # user specified an assignment
@@ -242,7 +243,7 @@ def variableIntent(result, names, numbers):
     # user did not specifify a declaration type
     else:
         # By Katie Prochilo; help and set the declaration type
-        decType = decTypeMenu()
+        decType = decTypeMenu().lower()
                 
         # user specified a variable name
         if "(NAMING" in result:
@@ -263,7 +264,7 @@ def variableIntent(result, names, numbers):
         # user did not specifify a variable name
         else:
             # by Katie Prochilo
-            varName = varNameMenu()
+            varName = varNameMenu().lower()
                 
             names.insert(0,varName)
             # user specified an assignment
@@ -320,7 +321,10 @@ Preconditions: result, the full word version of a Java data type
 Return: a Java data type
 '''
 def replaceDecType(result):
+    result = result.lower()
     if "integer" in result:
+        return "int";
+    elif "int" in result:
         return "int";
     elif "float" in result:
         return "float";
@@ -345,6 +349,7 @@ Preconditions: result, the English version of a Java operator
 Return: a Java operator
 '''
 def replaceOperators(result):
+    result = result.lower()
     if "plus" in result:
         return "+";
     elif "minus" in result:
@@ -357,6 +362,7 @@ def replaceOperators(result):
         return "*";
     elif "modulus" in result:
         return "%";
+
 
 '''
 By Katie Prochilo
@@ -548,7 +554,7 @@ General help and information about methods
 def methodHelp():
     print("Methods are represented by a name, modifier, and a return type.")
     print("Here are examples of method statements that this program understands: ")
-    print("\tCreate a method.\n\tMake a method called \"my_method\"\n\tMake a private method")
+    print("\tCreate a method.\n\tMake a method called \"my_method\"\n\tMake a private method\n")
 
 
 '''
@@ -675,7 +681,7 @@ def varTypeOptions():
 '''
 By Abigail Eastman, Katie Prochilo, and Caitlin McElwee
 
-Creates a grammar using Python's Natural Language Toolkit
+A Context-Free Grammar using Python's Natural Language Toolkit
 '''
 grammar = nltk.CFG.fromstring("""
 S -> VARIABLE | SET | METHOD | PRINT | COMMENT
@@ -763,7 +769,7 @@ while cont == 'y':
         printHelp()
         commentHelp()
         methodHelp()
-    # Else block by Abigail Eastman; User seeks to create a Java snippet    
+    # Else block by AE; User seeks to create a Java snippet    
     else:
         newInput = userInput.rstrip('.') # Takes away the period from the sentence
         names = re.findall(r'"[^"]*"', newInput) # Gets anything in double quotes
