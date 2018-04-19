@@ -1,14 +1,32 @@
 '''
-Artificial Intelligence Project
+English to Java Mathematical Translator
+    https://github.com/kprochi2/EnglishToJava
 
-This program takes simple english sentences and translates them into
-the java programming language as commands.
+Katie Prochilo, Abigail Eastman, Caitlin McElwee
+
+This program takes simple English sentences and translates them into
+to valid Java code snippets. Its intended purpose is to be a reference
+for beginner Java learners, as well as for those who need a
+refresher for this programming language.
+
+While interacting with the program, users receive helpful tips.
+The program can ask users for missing information, depending
+on what information was previously received.
+
+Documentation by: Katie Prochilo
 '''
 
 import nltk  # Holds the CFG and parser
 import re  # Used for regular expressions
 
 
+'''
+By Caitlin McElwee
+
+Precondition: names, the content of the comment
+
+Postcondition: print 3 types of Java comments
+'''
 def commentIntent(names):
     print ("There are three types of comments in Java\n")
     print ("In line:")
@@ -19,6 +37,16 @@ def commentIntent(names):
     print ("/**\n" + "*\t" + (names[0]).replace('"', "") + "\n*/")
 
 
+'''
+By Caitlin McElwee
+
+Preconditions:
+    result, the parsed input as a list
+    names, the content of the comment
+    numbers, any integers the user has specified in their input
+
+Postcondition: print 3 types of Java comments
+'''
 def printIntent(result, names, numbers):
     if "(VALEXPR" in result:
         print ("System.out.println(" + (expression(result, names, numbers)).replace('"', "") + ");")
@@ -31,8 +59,22 @@ def printIntent(result, names, numbers):
         print ("System.out.print(" + numbers[0] + ");")
 
 
+'''
+By Abigail Eastman
+
+Preconditions:
+    result, the parsed input as a list
+    names, the content of the comment
+    numbers, any integers the user has specified in their input
+
+Postcondition: set the user's specified variable to a:
+    value
+    variable
+    or expression
+'''
 def setIntent(result, names, numbers):
     lastName = len(names) - 1
+    # user specified a method name
     if "(VALEXPR" in result:
         if (result.index("(VALEXPR") > result.index("(SETVARNAME")):
             print("\n" + (names[0]).replace('"', "") + " = "\
@@ -40,6 +82,7 @@ def setIntent(result, names, numbers):
         elif (result.index("(VALEXPR") < result.index("(SETVARNAME")):
             print("\n" + (names[lastName]).replace('"', "") + " = "\
                   + expression(result, names[0: -1], numbers) + ";")
+    # user did not specifify an expression value
     else:
         if len(numbers) == 1:
             print("\n" + (names[0]).replace('"', "") + " = " + numbers[0] + ";")
@@ -50,9 +93,25 @@ def setIntent(result, names, numbers):
                 print("\n" + (names[0]).replace('"', "") + " = " + (names[1]).replace('"', "") + ";")
 
 
+'''
+By Abigail Eastman
+
+Preconditions:
+    result, the parsed input as a list
+    names, the content of the comment
+    numbers, any integers the user has specified in their input
+
+Postcondition: create the user's specified method with their desired:
+    return type
+    method name
+    and modifier
+'''
 def methodIntent(result, names, numbers):
+    # user specified a method name
     if "(NAMING" in result:
+        # user specified a modifier
         if "(MOD" in result:
+            # by Katie Prochilo
             returnType = returnTypeMenu()
                 
             if "private" in result:
@@ -67,9 +126,10 @@ def methodIntent(result, names, numbers):
             elif "static" in result:
                 print("public static " + replaceDecType(returnType) + " " + (names[0]).replace('"',  "")\
                         + "( ) {\n //Insert body here\n}")
+        # user did not specifify a modifier
         else:
+            # by Katie Prochilo
             modifier = modifierMenu()
-                
             returnType = returnTypeMenu()
                 
             if "private" in modifier:
@@ -84,11 +144,15 @@ def methodIntent(result, names, numbers):
             elif "static" in modifier:
                 print("public static " + replaceDecType(returnType) + " " + (names[0]).replace('"', "")\
                         + "( ) {\n //Insert body here\n}")
+    # user did not specifify a method name
     else:
-        methodName = methodNameMenu()
-                
+        # by Katie Prochilo
+        methodName = methodNameMenu()                
         names.insert(0,methodName)
+        
+        # user specified a modifier
         if "(MOD" in result:
+            # by Katie Prochilo
             returnType = returnTypeMenu()
                 
             if "private" in result:
@@ -103,9 +167,10 @@ def methodIntent(result, names, numbers):
             elif "static" in result:
                 print("public static " + replaceDecType(returnType) + " " + (names[0]).replace('"', "")\
                         + "( ) {\n //Insert body here\n}")
+        # user did not specifify a modifier
         else:
-            modifier = modifierMenu()
-            
+            # by Katie Prochilo
+            modifier = modifierMenu()            
             returnType = returnTypeMenu()
 
             if "private" in modifier:
@@ -122,9 +187,25 @@ def methodIntent(result, names, numbers):
                         + "( ) {\n //Insert body here\n}")
 
 
+'''
+By Abigail Eastman
+
+Preconditions:
+    result, the parsed input as a list
+    names, the content of the comment
+    numbers, any integers the user has specified in their input
+
+Postcondition: create the user's declared variable with their desired:
+    declaration type
+    variable name
+    variable assignment (optional)
+'''
 def variableIntent(result, names, numbers):
+    # user specified a declaration type
     if "(DECTYPE" in result:
+        # user specified a variable name
         if "(NAMING" in result:
+            # user specified an assignment
             if "(ASSIGN" in result:
                 if len(names) == 2 and len(numbers) == 0:
                     print("\n" + replaceDecType(result) + " " + (names[0]).replace('"', "") + " = "\
@@ -135,12 +216,16 @@ def variableIntent(result, names, numbers):
                 else:
                     print("\n" + replaceDecType(result) + " " + (names[0]).replace('"', "") + " = "\
                             + expression(result, names[1 :], numbers) + ";")
+            # user did not specifify an assignment
             else:
                 print("\n" + replaceDecType(result) + " " + (names[0]).replace('"', "") + ";")
+        # user did not specifify a variable name
         else:
+            # By Katie Prochilo; help and set the variable name
             varName = varNameMenu()
                 
             names.insert(0,varName)
+            # user specified an assignment
             if "(ASSIGN" in result:
                 if len(names) == 2 and len(numbers) == 0:
                     print("\n" + replaceDecType(result) + " " + (names[0]).replace('"', "") + " = "\
@@ -151,12 +236,17 @@ def variableIntent(result, names, numbers):
                 else:
                     print("\n" + replaceDecType(result) + " " + (names[0]).replace('"', "") + " = "\
                             + expression(result, names[1 :], numbers) + ";")
+            # user did not specifify an assignment
             else:
                 print("\n" + replaceDecType(result) + " " + (names[0]).replace('"', "") + ";")
+    # user did not specifify a declaration type
     else:
+        # By Katie Prochilo; help and set the declaration type
         decType = decTypeMenu()
                 
+        # user specified a variable name
         if "(NAMING" in result:
+            # user specified an assignment
             if "(ASSIGN" in result:
                 if len(names) == 2 and len(numbers) == 0:
                     print("\n" + replaceDecType(decType) + " " + (names[0]).replace('"',"") + " = "\
@@ -167,12 +257,16 @@ def variableIntent(result, names, numbers):
                 else:
                     print("\n" + replaceDecType(decType) + " " + (names[0]).replace('"',"") + " = "\
                           + expression(result, names[1 :], numbers) + ";")
+            # user did not specifify an assignment
             else:
                 print("\n" + replaceDecType(decType) + " " + (names[0]).replace('"',"") + ";")
+        # user did not specifify a variable name
         else:
+            # by Katie Prochilo
             varName = varNameMenu()
                 
             names.insert(0,varName)
+            # user specified an assignment
             if "(ASSIGN" in result:
                 if len(names) == 2 and len(numbers) == 0:
                     print("\n" + replaceDecType(decType) + " " + (names[0]).replace('"',"") + " = "\
@@ -183,12 +277,28 @@ def variableIntent(result, names, numbers):
                 else:
                     print("\n" + replaceDecType(decType) + " " + (names[0]).replace('"',"") + " = "\
                             + expression(result, names[1 :], numbers) + ";")
+            # user did not specifify an assignment
             else:
                 print("\n" + replaceDecType(decType) + " " + (names[0]).replace('"',"") + ";")
 
-                
+    
+'''
+Caitlin McElwee
+
+Replaces 
+
+Preconditions: 
+    result, the parsed input as a list
+    names, the content of the comment
+    numbers, any integers the user has specified in their input
+
+Return: a Java expression with:
+    two variables
+    two numbers
+    or one of each
+'''            
 def expression(result, names, numbers):
-    if len(names) == 2 and len(numbers) == 0:  # Printing expression
+    if len(names) == 2 and len(numbers) == 0: # Printing expression
         return  ((names[0]).replace('"',"") + " "\
                + replaceOperators(result) + " " + (names[1]).replace('"',""));
     elif len(numbers) == 2 and len(names) == 0: # Printing an expression
@@ -199,6 +309,16 @@ def expression(result, names, numbers):
                + replaceOperators(result) + " " + numbers[0]);
 
 
+'''
+Caitlin McElwee
+
+Replaces written variable types in the result with
+    the written Java version
+
+Preconditions: result, the full word version of a Java data type
+
+Return: a Java data type
+'''
 def replaceDecType(result):
     if "integer" in result:
         return "int";
@@ -214,6 +334,16 @@ def replaceDecType(result):
         return "void";
 
 
+'''
+Caitlin McElwee
+
+Replaces written operators in the result with
+    the symbol used in Java
+
+Preconditions: result, the English version of a Java operator
+
+Return: a Java operator
+'''
 def replaceOperators(result):
     if "plus" in result:
         return "+";
@@ -228,18 +358,36 @@ def replaceOperators(result):
     elif "modulus" in result:
         return "%";
 
+'''
+By Katie Prochilo
 
-# General Help
-def helpPrompt(intent, action):
+Help prompt to choose between:
+    a list of accepted options for an intent
+    general help for the intent topic
+
+Preconditions:
+    prep, a description of an intent in a prepositional phrase
+    gerund, a description of an intent as a gerund
+
+Return: userInput, their selection from the help menu
+'''
+def helpPrompt(prep, gerund):
     print("Help Options: ")
-    print("\tA: Options " + intent + ".")
-    print("\tB: Help and additional information about " + action + ".")
+    print("\tA: Options " + prep + ".")
+    print("\tB: Help and additional information about " + gerund + ".")
     userInput = input("Select One: ")
     print()
     return userInput    
 
 
-# Help Menus
+'''
+By Katie Prochilo
+
+Help menu for users who need to input a data type for the
+Declare a Variable, Set a Variable intent
+
+Return: decType, a Java data type from user input
+'''
 def decTypeMenu():
     decType = input("Enter a variable type: ")  
     print("")
@@ -255,6 +403,14 @@ def decTypeMenu():
     return decType
 
 
+'''
+By Katie Prochilo
+
+Help menu for users who need to input a method name for the
+Create a Method intent
+
+Return: methodName, a name to call their method
+'''
 def methodNameMenu():
     methodName = input("Enter a name for the method: ")
     print("")
@@ -270,6 +426,14 @@ def methodNameMenu():
     return methodName
 
 
+'''
+By Katie Prochilo
+
+Help menu for users who need to input a modifier for the
+Create a Method intent
+
+Return: modifier, a valid Java access modifier
+'''
 def modifierMenu():
     modifier = input("Enter a modifier: ") 
     print("")        
@@ -285,6 +449,14 @@ def modifierMenu():
     return modifier
 
 
+'''
+By Katie Prochilo
+
+Help menu for users who need to input a return type for the
+Create a Method intent
+
+Return: returnType, a Java data type from user input
+'''
 def returnTypeMenu():
     returnType = input("Enter the return type: ")
     print("")
@@ -299,6 +471,14 @@ def returnTypeMenu():
     return returnType
 
 
+'''
+By Katie Prochilo
+
+Help menu for users who need to input a variable name for the
+Declare a Variable, Set a Variable intent
+
+Return: varName, a name to call their variable
+'''
 def varNameMenu():
     varName = input("Enter a variable name: ")
     print("")
@@ -313,8 +493,12 @@ def varNameMenu():
         print("")
     return varName
 
+  
+'''
+By Caitlin McElwee
 
-# Intent Help    
+General help and information about variable declarations
+''' 
 def variableHelp():
     print("Variable delcarations have three parts in Java: the type, name, and assignment.")
     print("Here are examples of variable declarations this program understands:\n")
@@ -322,6 +506,11 @@ def variableHelp():
     print("Make a new variable called \"X\" equal to \"Y\" modulus 7.\n")
 
 
+'''
+By Caitlin McElwee
+
+General help and information about setting variables
+'''
 def setHelp():
     print("Setting a variable has two parts in Java: the name and the quantity assigned.")
     print("Here are examples of variables being set that this program understands:\n")
@@ -329,31 +518,55 @@ def setHelp():
     print("Make \"X\" equal -8.3 times 12\nSet \"index\" to \"current\"\n")
 
 
+'''
+By Caitlin McElwee
+
+General help and information about printing
+'''
 def printHelp():
     print("For the printing, use the word print and then what you would like to print.")
     print("Here are examples of print statements that this program understands:\n")
     print("Print \"X\" plus -67\nPrint \"Hello, world!\"\nPrint 5.\n")
 
 
+'''
+By Caitlin McElwee
+
+General help and information about comments
+'''
 def commentHelp():
     print("Comments are represented by the word comment and then a string.")
     print("Here are examples of comment statements that this program understands: ")
     print("\tComment \"Look at this great comment\"\n\tComment \"Base Case\"\n")
 
 
+'''
+By Abigail Eastman
+
+General help and information about methods
+'''
 def methodHelp():
     print("Methods are represented by a name, modifier, and a return type.")
     print("Here are examples of method statements that this program understands: ")
     print("\tCreate a method.\n\tMake a method called \"my_method\"\n\tMake a private method")
 
 
-# Intent-Specific Help
+'''
+By Katie Prochilo
+
+General help and information about method names in Java
+'''
 def methodNameHelp():
     print("Methods are invoked, or used, by calling method names.")
     print("Methods names can be pretty much anything, but in Java")
     print("they are usually written in camel case.\n")
 
-                                   
+        
+'''
+By Katie Prochilo
+
+Prints a list of valid method name options
+'''                           
 def methodNameOptions():
     print("Method names can be anything, but are best as verbs.")
     print("The first letter should be lowercase.")
@@ -362,6 +575,11 @@ def methodNameOptions():
     print("\tanotherExample\n")
               
 
+'''
+By Katie Prochilo
+
+General help and information about modifiers in Java
+'''
 def modifierHelp():
     print("Modifiers are keywords added to a method definition.")
     print("These access modifiers control what code is available where.")
@@ -369,6 +587,11 @@ def modifierHelp():
     print("anywhere in the project.\n")
                  
 
+'''
+By Katie Prochilo
+
+Prints a list of valid access modifier options
+'''
 def modifierOptions():
     print("Method modifiers can be: ")
     print("\tPublic - Visible to the world")
@@ -376,12 +599,22 @@ def modifierOptions():
     print("\tProtected - Visible to the package and its subclasses\n")
                                    
 
+'''
+By Katie Prochilo
+
+General help and information about return types in Java
+'''
 def returnTypeHelp():
     print("Methods in Java have the option to return a value so that it can")
     print("be used elsewhere in the program. Return types constrain the")
     print("data type of the returned value.\n")
               
 
+'''
+By Katie Prochilo
+
+Prints a list of valid return type options
+'''
 def returnTypeOptions():
     print("Return Types can be: ")
     print("\tVoid - Nothing is returned")
@@ -392,11 +625,21 @@ def returnTypeOptions():
     print("\tBoolean - A variable with only two possible values: true and false\n")
 
 
+'''
+By Caitlin McElwee
+
+General help and information about variable names in Java
+'''
 def varNameHelp():
     print("Variables are  used by referring to their names. They can be")
     print("pretty much anything, but in are usually written in camel case.\n")
     
 
+'''
+By Caitlin McElwee
+
+Prints a list of valid variable name options
+'''
 def varNameOptions():
     print("Variable names can be anything, but are best as nouns. The")
     print("first letter should be lowercase. The first letter of each")
@@ -405,11 +648,21 @@ def varNameOptions():
     print("\tanotherExample\n")
     
 
+'''
+By Katie Prochilo
+
+General help and information about variable types in Java
+'''
 def varTypeHelp():
     print("Variable data types constrain the values that can be associated")
     print("with a variable.\n")
     
 
+'''
+By Katie Prochilo
+
+Prints a liat of valid variable type options
+'''
 def varTypeOptions():
     print("Variable types can be: ")
     print("\tInt - An integer number between  -2^31  and  (2^31)-1")
@@ -419,7 +672,11 @@ def varTypeOptions():
     print("\tBoolean - A variable with only two possible values: true and false\n")
     
     
-# Creates the grammar
+'''
+By Abigail Eastman, Katie Prochilo, and Caitlin McElwee
+
+Creates a grammar using Python's Natural Language Toolkit
+'''
 grammar = nltk.CFG.fromstring("""
 S -> VARIABLE | SET | METHOD | PRINT | COMMENT
 VARIABLE -> DECLARE NAMING ASSIGN
@@ -480,7 +737,7 @@ NEW -> 'new'
 # Feeds the grammar into the parser
 parser = nltk.ChartParser(grammar)
 
-
+# By Katie Prochilo; Welcome pop-up and start-up help.
 print ("-------------------------------------------------------------------")
 print ("\n\tWelcome to the Natural Language Program.\n")
 print ("-------------------------------------------------------------------\n")
@@ -489,6 +746,7 @@ print("\tVariable names\n\tNumbers\n\tComment content\n\tPrint content\n")
 print ("Input \"Help\" at any time for a quick Java lesson or example input.\n")
 print ("-------------------------------------------------------------------\n")
 
+# By Abigail Eastman; A while loop to continuously parse user input
 # cont is 'y' if the user would like to continue the program
 cont = 'y'
 # If explanation is true, it prints out the steps of the program
@@ -497,6 +755,7 @@ explanation = True
 while cont == 'y':
     userInput = input("Input a string: ")
 
+    # By Katie Prochilo; Prints all general help
     if userInput.lower() == "help":
         print()
         variableHelp()
@@ -504,7 +763,7 @@ while cont == 'y':
         printHelp()
         commentHelp()
         methodHelp()
-        
+    # Else block by Abigail Eastman; User seeks to create a Java snippet    
     else:
         newInput = userInput.rstrip('.') # Takes away the period from the sentence
         names = re.findall(r'"[^"]*"', newInput) # Gets anything in double quotes
