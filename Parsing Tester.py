@@ -1,8 +1,7 @@
 '''
-test
 English to Java Mathematical Translator
 
-Katie Prochilo, Abigail Eastman, Caitlin McElwee
+Katie Prochilo, Abigail Eastman
 
 This program takes simple English sentences and translates them into
 to valid Java code snippets. Its intended purpose is to be a reference
@@ -21,7 +20,7 @@ import re  # Used for regular expressions
 
 
 '''
-By Caitlin McElwee
+By Abigail Eastman
 
 Precondition: names, the content of the comment
 
@@ -38,7 +37,7 @@ def commentIntent(names):
 
 
 '''
-By Caitlin McElwee
+By Abigail Eastman
 
 Preconditions:
     result, the parsed input as a list
@@ -285,7 +284,7 @@ def variableIntent(result, names, numbers):
 
     
 '''
-Caitlin McElwee
+Abigail Eastman
 
 Replaces 
 
@@ -312,7 +311,7 @@ def expression(result, names, numbers):
 
 
 '''
-Caitlin McElwee
+Abigail Eastman
 
 Replaces written variable types in the result with
     the written Java version
@@ -340,7 +339,7 @@ def replaceDecType(result):
 
 
 '''
-Caitlin McElwee
+Abigail Eastman
 
 Replaces written operators in the result with
     the symbol used in Java
@@ -502,7 +501,7 @@ def varNameMenu():
 
   
 '''
-By Caitlin McElwee
+By Abigail Eastman
 
 General help and information about variable declarations
 ''' 
@@ -514,7 +513,7 @@ def variableHelp():
 
 
 '''
-By Caitlin McElwee
+By Abigail Eastman
 
 General help and information about setting variables
 '''
@@ -526,7 +525,7 @@ def setHelp():
 
 
 '''
-By Caitlin McElwee
+By Abigail Eastman
 
 General help and information about printing
 '''
@@ -537,7 +536,7 @@ def printHelp():
 
 
 '''
-By Caitlin McElwee
+By Abigail Eastman
 
 General help and information about comments
 '''
@@ -633,7 +632,7 @@ def returnTypeOptions():
 
 
 '''
-By Caitlin McElwee
+By Katie Prochilo
 
 General help and information about variable names in Java
 '''
@@ -643,7 +642,7 @@ def varNameHelp():
     
 
 '''
-By Caitlin McElwee
+By Katie Prochilo
 
 Prints a list of valid variable name options
 '''
